@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package api;
+option go_package = "github.com/todo-server/pkg/domain/proto/api";
+
+import "google/api/annotations.proto";
+
+service Item {
+    rpc GetItem(GetItemRequest) returns (GetItemResponse) {
+        option (google.api.http) = {
+            post: "/get"
+            body: "*"
+        };
+    }
+}
+
+message GetItemRequest {
+    // todo項目のID
+    string item_id = 1;
+}
+
+message GetItemResponse {
+    // todo項目の名前
+    string item_name = 2;
+}

@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  protoc:
+    build:
+      context: .
+      dockerfile: ./build/docker/protoc/Dockerfile
+    working_dir: /usr/src/todo-server
+    volumes:
+      - ./:/usr/src/todo-server
