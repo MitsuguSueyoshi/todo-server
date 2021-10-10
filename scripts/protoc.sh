@@ -2,7 +2,7 @@
 
 proto_file_dir=./protobuf
 api_proto_files=$(find ${proto_file_dir}/api -type f -name '*.proto')
-proto_out_dir=./pkg/domain/proto/api
+proto_out_dir=./pkg/domain/proto
 
 # If the paths=source_relative flag is specified,
 # the output file is placed in the same relative directory as the input file.
