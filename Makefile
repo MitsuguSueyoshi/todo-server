@@ -1,3 +1,8 @@
+.PHONY: run-api
+run-api: ## apiサーバーの起動
+	go run ./cmd/api/main.go
+	go run ./cmd/gateway/main.go
+
 .PHONY: protoc
 protoc: ## gRPCのstubコードの生成
 	# protoc
@@ -9,7 +14,6 @@ protoc: ## gRPCのstubコードの生成
 	goimports -w -local "github.com/todo-server" pkg/domain/proto/
 
 .PHONY: fmt
-fmt:
-	# gofmt,goimportsで整形
+fmt: ## ファイルのフォーマット整形
 	gofmt -s -w cmd/ pkg/
 	goimports -w -local "github.com/todo-server" cmd/ pkg/

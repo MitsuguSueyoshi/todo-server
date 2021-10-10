@@ -8,7 +8,7 @@ import "google/api/annotations.proto";
 service Item {
     rpc GetItem(GetItemRequest) returns (GetItemResponse) {
         option (google.api.http) = {
-            post: "/get"
+            post: "/item/get"
             body: "*"
         };
     }

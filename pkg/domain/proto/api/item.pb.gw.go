@@ -161,7 +161,7 @@ func RegisterItemHandlerClient(ctx context.Context, mux *runtime.ServeMux, clien
 }
 
 var (
-	pattern_Item_GetItem_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"get"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Item_GetItem_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"item", "get"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (
