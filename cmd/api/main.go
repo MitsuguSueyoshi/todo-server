@@ -1,25 +1,51 @@
 package main
 
 import (
+	"context"
+	"flag"
 	"log"
 	"net"
 
 	"google.golang.org/grpc"
+
+	pbapi"github.com/todo-server/pkg/domain/proto/api"
 )
 
-const (
-	port = ":50051"
+var (
+	// gRPCサーバーエンドポイント
+	serverAddr string
 )
+
+func init() {
+	flag.StringVar(&serverAddr, "target", ":9090", "(required) target endpoint of handler")
+	flag.Parse()
+}
+
+type itemServer struct {}
+
+func (s *itemServer) GetItem(ctx context.Context, req *pbapi.GetItemRequest) (*pbapi.GetItemResponse,error)  {
+	itemName := "テスト"
+	if req.ItemId == "Hello" {
+		itemName = "World"
+	}
+
+	return &pbapi.GetItemResponse{ItemName: itemName},nil
+}
 
 func main() {
 	// リッスン処理
-	lis, err := net.Listen("tcp", port)
+	lis, err := net.Listen("tcp", serverAddr)
 	if err != nil {
 		log.Fatalf("failed to listen: %v", err)
 	}
 
-	// サーバー起動
+	// gRPCサーバー作成
 	s := grpc.NewServer()
+
+	// 各APIサーバーの登録
+	pbapi.RegisterItemServer(s, &itemServer{})
+
+	// 起動
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}

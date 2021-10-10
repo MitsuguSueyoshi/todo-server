@@ -1,26 +1,48 @@
 package main
 
 import (
+	"context"
+	"flag"
 	"log"
-	"net"
+	"net/http"
 
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"google.golang.org/grpc"
+
+	pbapi "github.com/todo-server/pkg/domain/proto/api"
 )
 
-const (
-	port = ":50051"
+var (
+	// gRPC-Gateway自体のエンドポイント
+	gatewayAddr string
+	// Call対象のgRPCサーバーエンドポイント
+	serverAddr string
 )
+
+func init() {
+	flag.StringVar(&gatewayAddr, "addr", ":8080", "(required) tcp host:port to connect")
+	flag.StringVar(&serverAddr, "target", ":9090", "(required) target endpoint of handler")
+	flag.Parse()
+}
 
 func main() {
-	// リッスン処理
-	lis, err := net.Listen("tcp", port)
-	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
+	ctx := context.Background()
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	mux := runtime.NewServeMux()
+	opts := []grpc.DialOption{grpc.WithInsecure()}
+
+	// 各サーバーのエンドポイントの登録
+	if err := pbapi.RegisterItemHandlerFromEndpoint(ctx, mux, serverAddr, opts); err != nil {
+		log.Fatalf("failed to resister Item handler: %v", err)
 	}
 
-	// サーバー起動
-	s := grpc.NewServer()
-	if err := s.Serve(lis); err != nil {
-		log.Fatalf("failed to serve: %v", err)
+	// gRPC-gatewayのリバースプロキシの起動
+	s := &http.Server{
+		Addr:              gatewayAddr,
+	}
+	if err := s.ListenAndServe(); err != nil {
+		log.Fatalf("failed to listen and serve: %v", err)
 	}
 }
