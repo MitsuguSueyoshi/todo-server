@@ -25,9 +25,6 @@ type itemServer struct {}
 
 func (s *itemServer) GetItem(ctx context.Context, req *pbapi.GetItemRequest) (*pbapi.GetItemResponse,error)  {
 	itemName := "テスト"
-	if req.ItemId == "Hello" {
-		itemName = "World"
-	}
 
 	return &pbapi.GetItemResponse{ItemName: itemName},nil
 }
