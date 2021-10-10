@@ -10,7 +10,7 @@ api_out_dir=./pkg/domain/proto/api
 
 protoc \
   -I=${proto_file_dir} \
-  --go_out=:${api_out_dir} \
-  --go-grpc_out=require_unimplemented_servers=false:${api_out_dir} \
-  --grpc-gateway_out=logtostderr=true:${api_out_dir} \
+  --go_out=paths=source_relative:${api_out_dir} \
+  --go-grpc_out=paths=source_relative,require_unimplemented_servers=false:${api_out_dir} \
+  --grpc-gateway_out=paths=source_relative,logtostderr=true:${api_out_dir} \
   ${api_proto_files};
