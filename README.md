@@ -1,1 +1,3 @@
-# todo_server
+# todo-server
+
+todo管理アプリ
