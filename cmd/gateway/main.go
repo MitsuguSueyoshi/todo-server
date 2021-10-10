@@ -20,8 +20,8 @@ var (
 )
 
 func init() {
-	flag.StringVar(&gatewayAddr, "addr", ":8080", "(required) tcp host:port to connect")
-	flag.StringVar(&serverAddr, "target", ":9090", "(required) target endpoint of handler")
+	flag.StringVar(&gatewayAddr, "gatewayAddr", ":8080", "(required) tcp host:port to connect")
+	flag.StringVar(&serverAddr, "serverAddr", ":9090", "(required) target endpoint of handler")
 	flag.Parse()
 }
 
@@ -39,10 +39,9 @@ func main() {
 	}
 
 	// gRPC-gatewayのリバースプロキシの起動
-	s := &http.Server{
-		Addr:              gatewayAddr,
-	}
-	if err := s.ListenAndServe(); err != nil {
+	log.Println("gRPC gateway started to serve")
+	if err := http.ListenAndServe(gatewayAddr, mux); err != nil {
 		log.Fatalf("failed to listen and serve: %v", err)
 	}
+	return
 }

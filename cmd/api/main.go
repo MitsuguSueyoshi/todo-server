@@ -17,7 +17,7 @@ var (
 )
 
 func init() {
-	flag.StringVar(&serverAddr, "target", ":9090", "(required) target endpoint of handler")
+	flag.StringVar(&serverAddr, "serverAddr", ":9090", "(required) target endpoint of handler")
 	flag.Parse()
 }
 
@@ -46,7 +46,9 @@ func main() {
 	pbapi.RegisterItemServer(s, &itemServer{})
 
 	// 起動
+	log.Println("gRPC server started to serve")
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve: %v", err)
 	}
+	return
 }

@@ -1,6 +1,9 @@
 .PHONY: run-api
 run-api: ## apiサーバーの起動
 	go run ./cmd/api/main.go
+
+.PHONY: run-gateway
+run-gateway: ## gatewayプロキシサーバーの起動
 	go run ./cmd/gateway/main.go
 
 .PHONY: protoc
