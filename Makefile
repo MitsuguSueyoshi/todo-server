@@ -20,3 +20,15 @@ protoc: ## gRPCのstubコードの生成
 fmt: ## ファイルのフォーマット整形
 	gofmt -s -w cmd/ pkg/
 	goimports -w -local "github.com/todo-server" cmd/ pkg/
+
+.PHONY: build-api
+TAG := $(tag)
+build-api: ## apiイメージのビルド & プッシュ
+	docker build -f ./build/docker/api/Dockerfile -t mitsugu1128/todo-server-api:${TAG} .
+	docker push mitsugu1128/todo-server-api:${TAG}
+
+.PHONY: build-gateway
+TAG := $(tag)
+build-gateway: ## gatewayイメージのビルド & プッシュ
+	docker build -f ./build/docker/gateway/Dockerfile -t mitsugu1128/todo-server-gateway:${TAG} .
+	docker push mitsugu1128/todo-server-gateway:${TAG}
