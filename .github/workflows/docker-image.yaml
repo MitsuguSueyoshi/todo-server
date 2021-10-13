@@ -17,33 +17,19 @@ jobs:
       - name: Check out source code
         uses: actions/checkout@v1
 
-      - name: create tag
+      - name: API Build and push docker image
         run: |
-          export TAG=$(echo ${GITHUB_REF} | grep -o "v[0-9][\.].*")
-          echo "TAGS=$TAG" >> $GITHUB_ENV
-
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v1
-
-      - name: API Build and push
-        uses: docker/build-push-action@v2
-        with:
-          context: ./
-          file: ./build/docker/api/Dockerfile
-          builder: ${{ steps.buildx.outputs.name }}
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          push: true
-          tags: ${{ env.TAGS }}
-
-      - name: Gateway Build and push
-        uses: docker/build-push-action@v2
-        with:
-          context: ./
-          file: ./build/docker/gateway/Dockerfile
-          builder: ${{ steps.buildx.outputs.name }}
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          push: true
-          tags: ${{ env.TAGS }}
+          TAG=$(echo ${GITHUB_REF} | grep -o "v[0-9][\.].*")
+          DOCKER_IMAGE=$DOCKER_IMAGE_API_NAME:$TAG
+          echo "Docker image: ${DOCKER_IMAGE}"
+          docker login --username="${{ secrets.DOCKER_USERNAME }}" --password="${{ secrets.DOCKER_PASSWORD }}"
+          docker build -f ./build/docker/api/Dockerfile -t $DOCKER_IMAGE .
+          docker push $DOCKER_IMAGE
+      - name: Gateway Build and push docker image
+        run: |
+          TAG=$(echo ${GITHUB_REF} | grep -o "v[0-9][\.].*")
+          DOCKER_IMAGE=$DOCKER_IMAGE_GATEWAY_NAME:$TAG
+          echo "Docker image: ${DOCKER_IMAGE}"
+          docker login --username="${{ secrets.DOCKER_USERNAME }}" --password="${{ secrets.DOCKER_PASSWORD }}"
+          docker build -f ./build/docker/gateway/Dockerfile -t $DOCKER_IMAGE .
+          docker push $DOCKER_IMAGE
