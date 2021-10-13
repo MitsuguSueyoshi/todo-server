@@ -21,7 +21,7 @@ jobs:
         run: |
           TAG=$(echo ${GITHUB_REF} | grep -o "v[0-9][\.].*")
           echo "Docker image: ${DOCKER_IMAGE}"
-          docker login --username="${{ secrets.DOCKER_USERNAME }}" --password="${{ secrets.DOCKER_PASSWORD }}"
+          docker login -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_PASSWORD }}" docker.io
           make build-api tag=$TAG
 
       - name: Gateway Build and push docker image
